@@ -350,9 +350,8 @@ void division(int* num1, int* num2, int num1_size, int num2_size) {
     int temp_num[2 * MAX_LENGTH] = {0};
     int temp_result[2*MAX_LENGTH] = {0};
     int num1_pos_flag = 1;
-    int count_size = 0, temp_size = 1, tmp_result_size = 0;
+    int count_size = 0, temp_size = 1;
     int ten[1] = {9};  // while에서 이미 한 번 num2로 초기화 했기 때문
-    int count, count2;
 
     if ((bigger_flag == -1) || ((num1[0] == 0) && num1_size == 1)) {
         result[0] = 0;
@@ -375,120 +374,97 @@ void division(int* num1, int* num2, int num1_size, int num2_size) {
         num1[num1_size-1] = abs(num1[num1_size-1]);
         num2[num2_size-1] = abs(num2[num2_size-1]);
 
-        printf("DIVISION START POINT\n");
-
-        for (int i = 0; i < num1_size; i++) {
-            temp_num[i] = num1[i];
-        }
-        temp_size = num1_size;
-
+        int zero[1] = {0};
         int count = (count_size+1) * 4 - 1;
         int for_loop_first_flag = 1;
-        while (count >= 0) {
-            // result num2로 초기화
-            for (int i = 0; i < num2_size; i++) {
-                result[i] = num2[i];
-            }
-            result_size = num2_size;
+        int check_count;
 
-            for (int i = result_size-1; i >= 0; i--) {
-                printf("RESULT << NUM2: %d", result[i]);
-            }
-            printf("\n");
+        for (int i = 0; i < num2_size; i++) {
+            temp_num[i] = num2[i];
+        }
+        temp_size = num2_size;
 
-            for (int i = 0; i < count; i++) {
-                if (for_loop_first_flag == 1) {
-                    int arr[1] = {10};
-                    for (int j = 0; j < num2_size; j++) {
-                        result[j] = 0;
-                    }
-                    result_size = 1;
-                    for_loop_first_flag = 0;
-                    multiplication(num2, arr, num2_size, 1);
-                }else {
-                    multiplication(result, ten, result_size, 1); // save 현재 결과 값의 가장 높은 자리 수나 1작은 위치로 옮긴다.
+        for (int i = 0; i < num1_size; i++) {
+            result[i] = num1[i];
+        }
+        result_size = num1_size;
+
+        division_result_size = (result_size - temp_size) * 4 - 1;
+
+        while (1) {
+            if (num1_size != temp_size) {
+                for (int i = temp_size; i > 0; i--) {
+                    temp_num[i] = temp_num[i-1];
                 }
-                // printf("<<MULTIPLY TEN>>\n");
-                // printf("result SIZE: %d\n", result);
-                // for (int i = 0; i < result_size; i++) {
-                //     printf("%d", result[i]);
-                // }
-                // printf("\n");
+                temp_num[0] = 0;
+                temp_size++;
+            }else {
+                // // 상위 index에 num1과 temp의 자릿 수 및 값 비교를 위함.
+                // check_count = num1[num1_size-1] / temp_num[temp_size-1];
+                break;
             }
+        }
 
-            printf("<<AFTER MULTIPY TEN>>\n");
-            for (int i = result_size-1; i >= 0; i--) {
-                printf("%d", result[i]);
+        // if (check_count == 0) {
+        //     // 자릿 수 하나 빼기
+        //     int next = 0;
+        //     for (int i = result_size-1; i >= 0; i--) {
+        //         int temp = (result[i]+next*10000) / 10;
+        //         next = temp % 10;
+        //         division_result_size--;
+
+        //         if ((temp == 0) && (i == result_size-1)) {
+        //             result_size--;
+        //         }else {
+        //             result[i] = temp;
+        //         }
+        //     }
+        // }else if (check_count >= 1000) {
+        //     temp_num[temp_size-1] *= 1000;
+        //     division_result_size += 3;
+        // }else if (check_count >= 100) {
+        //     temp_num[temp_size-1] *= 100;
+        //     division_result_size += 2;
+        // }else if (check_count >= 10) {
+        //     temp_num[temp_size-1] *= 10;
+        //     division_result_size += 1;
+        // }
+        
+        int while_count = division_result_size;
+        while(while_count > 0) {
+            if (absBigger(result, temp_num, result_size, temp_size) != -1) {
+                subtraction(result, temp_num, result_size, temp_size);
+                temp_result[while_count-1]++;
+            }else {
+                int next = 0;
+                for (int i = temp_size-1; i >= 0; i--) {
+                    int temp = (temp_num[i]+next*10000) / 10;
+                    next = temp % 10;
+
+                    if ((temp == 0) && (i == temp_size-1)) {
+                        temp_size--;
+                    }else {
+                        temp_num[i] = temp;
+                    }
+                }
+                while_count--;
+            }
+            printf("RESULT: ");
+            for (int i = 0; i < result_size; i++) {
+                printf("%04d ", result[i]);
             }
             printf("\n");
 
-            // 자리 수가 맞지 않은 경우 자리 수를 낮추기 위해 다시 for문 탐색
-            bigger_flag = absBigger(temp_num, result, temp_size, result_size);
-            printf("<<BIGGER FLAG : %d>>\n", bigger_flag);
-            if (bigger_flag == -1) {
-                count--;
-                continue;
+            printf("TEMP: ");
+            for (int i = 0; i < temp_size; i++) {
+                printf("%04d ", temp_num[i]);
             }
-            
-            subtraction(temp_num, result, temp_size, result_size);
-            temp_result[count]++;
-            tmp_result_size++;
-
-            printf("RESULT SIZE << AFTER SUBTRACTION: %d\n", result_size);
-
-            printf("RESULT << AFTER SUBTRACTION\n");
-            for (int i = 0; i < result_size; i++) {
-                printf("%d ", result[i]);
-                temp_num[i] = result[i];
-            }
-            printf("\nEND, result_size: %d\n", result_size);
-            
-            // if (tmp_result_size == 3) {
-            //     break;
-            // }
-
-            temp_size = result_size;
+            printf("\n");
         }
-
-        printf("DIVISION RESULT!!\n");
-
-        for (int j = 0; j < 10; j++) {
-            // if (isdigit(temp_result[j]) != 0) {
-            printf("%d ", temp_result[j]);
-            // }else {
-                // break;
-            // }
+        printf("PLEASE %d\n", division_result_size);
+        for (int i = 0; i < division_result_size+1; i++) {
+            printf("%d ", temp_result[i]);
         }
-        printf("RESULT END\n");
-        // subtraction(num1, zero, num1_size, 1);
-        // printf("START DIVISION\n");
-
-        // while (absBigger(save, zero, save_size, 1) != -1) {
-        //     subtraction(save, num2, save_size, num2_size);
-        //     temp_num[0]++;
-        //     if (temp_num[0] / 10000 == 1) {
-        //         for (int i = 0; i < temp_size; i++) {
-        //             temp = temp_num[i] + next;
-        //             if (temp / 10000 != 0) {
-        //                 temp_num[i] = temp % 10000;
-        //                 next = temp / 10000;
-        //                 if (i == temp_size - 1) {
-        //                     temp_num[temp_size] = next;
-        //                     temp_size++;
-        //                     next = 0;
-        //                     break;
-        //                 }
-        //             }else {
-        //                 next = 0;
-        //                 break;
-        //             }
-        //         }
-        //     }else {
-        //         continue;
-        //     }
-        // }
-        // printf("FINAL DIVISON\n");
-        // subtraction(temp_num, one, temp_size, 1);
+        printf("\n");
     }
-
 }
