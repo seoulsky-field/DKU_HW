@@ -6,4 +6,5 @@ Homework 1. Arbitrary precision integer arithmetic (~ 22. 10. 02.)
 Homework 2. Machine-level programming (~ 22. 10. 23.)
   
 
-### System Programming
+### System Programming  
+Homework 3. Make a command called "mycat" and "mycp" (~ 22. 11. 04.)  
