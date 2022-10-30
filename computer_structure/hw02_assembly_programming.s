@@ -1,3 +1,7 @@
+# Stack에 array를 사전 저장하는 방법은 아래 링크를 참조하였습니다.
+# https://stackoverflow.com/questions/65965154/initialize-memory-for-array-in-risc-v
+
+
 MAIN:
     addi    sp, sp, -40
 
