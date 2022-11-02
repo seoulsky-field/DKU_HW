@@ -6,5 +6,5 @@ Homework 1. Arbitrary precision integer arithmetic (~ 22. 10. 02.)
 Homework 2. Machine-level programming (~ 22. 10. 30.)
   
 
-### System Programming  
+### [System Programming](https://github.com/seoulsky-field/DKU_HomeWork/tree/main/system_programming)  
 Homework 3. Make a command called "mycat" and "mycp" (~ 22. 11. 04.)  
